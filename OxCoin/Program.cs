@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace OxCoin
 {
@@ -14,7 +9,15 @@ namespace OxCoin
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var cancelSource = new CancellationTokenSource();
+            var appBackground = BuildWebHost(args).RunAsync(cancelSource.Token);
+
+            Console.WriteLine("Press any key to DIE...");
+            Console.ReadLine();
+
+            cancelSource.Cancel();
+
+            appBackground.Wait();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

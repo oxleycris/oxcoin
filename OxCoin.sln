@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OxCoin", "OxCoin\OxCoin.csproj", "{5F43D5BC-4C5B-492B-917F-C253E12FB19E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxCoin", "OxCoin\OxCoin.csproj", "{5F43D5BC-4C5B-492B-917F-C253E12FB19E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OxCoin.Tests", "OxCoin.Tests\OxCoin.Tests.csproj", "{F2B770F0-163C-4CB3-9437-38598E817837}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5F43D5BC-4C5B-492B-917F-C253E12FB19E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F43D5BC-4C5B-492B-917F-C253E12FB19E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F43D5BC-4C5B-492B-917F-C253E12FB19E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2B770F0-163C-4CB3-9437-38598E817837}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2B770F0-163C-4CB3-9437-38598E817837}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2B770F0-163C-4CB3-9437-38598E817837}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2B770F0-163C-4CB3-9437-38598E817837}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

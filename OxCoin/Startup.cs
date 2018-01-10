@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Autofac;
+using Autofac.Builder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using OxCoin.Services;
+using Autofac.Extensions.DependencyInjection;
 
 namespace OxCoin
 {
@@ -18,23 +17,45 @@ namespace OxCoin
             Configuration = configuration;
         }
 
+        public IContainer ApplicationContainer { get; private set; }
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            // Register services to Autofac
+            var builder = new ContainerBuilder();
+            builder.RegisterType<RetardService>().SingleInstance().As<IStartable>();
+            builder.Populate(services);
+
+            // Build our application container.
+            ApplicationContainer = builder.Build(ContainerBuildOptions.IgnoreStartableComponents);
+
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            // Start anything decorated with IStartable
+            foreach (var startable in app.ApplicationServices.GetServices<IStartable>())
+            {
+                startable.Start();
+            }
+
             app.UseMvc();
+
+            // If you want to dispose of resources that have been resolved in the
+            // application container, register for the "ApplicationStopped" event.
+            appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
     }
 }
