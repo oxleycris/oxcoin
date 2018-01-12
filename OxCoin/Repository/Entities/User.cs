@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
-namespace OxCoin.Models
+namespace OxCoin.Repository.Entities
 {
     public class User
     {
+        [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        [Required]
         public string GivenName { get; set; }
 
+        [Required]
         public string FamilyName { get; set; }
+
     }
 }

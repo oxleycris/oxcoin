@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OxCoin.Services;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using OxCoin.Repository;
 
 namespace OxCoin
 {
@@ -28,7 +30,8 @@ namespace OxCoin
 
             // Register services to Autofac
             var builder = new ContainerBuilder();
-            builder.RegisterType<RetardService>().SingleInstance().As<IStartable>();
+            builder.RegisterType<GenerationService>().SingleInstance().As<IStartable>();
+            builder.RegisterType<OxCoinDbContext>().InstancePerLifetimeScope();
             builder.Populate(services);
 
             // Build our application container.
@@ -40,6 +43,12 @@ namespace OxCoin
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
         {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<OxCoinDbContext>();
+                context.Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
