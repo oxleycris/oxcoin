@@ -1,7 +1,7 @@
-﻿using OxCoin.Repository.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using OxCoin.Repository.Entities;
 
 namespace OxCoin.Models
 {

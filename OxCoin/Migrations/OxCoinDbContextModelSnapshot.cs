@@ -48,10 +48,10 @@ namespace OxCoin.Migrations
                     b.Property<DateTime>("Timestamp");
 
                     b.Property<decimal>("TransferFee")
-                        .HasColumnType("decimal(18, 8)");
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<decimal>("TransferedAmount")
-                        .HasColumnType("decimal(18, 8)");
+                        .HasColumnType("decimal(18, 4)");
 
                     b.HasKey("Id");
 

@@ -2,27 +2,28 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using OxCoin.Repository;
-using OxCoin.Repository.Entities;
 using System.Linq;
 using System.Collections.Generic;
+using OxCoin.Repository;
+using OxCoin.Repository.Entities;
 
 namespace OxCoin.Services
 {
     public class GenerationService : IStartable, IDisposable
     {
-        private const int SLEEP = 500;
-        private readonly CancellationTokenSource cancelSource = new CancellationTokenSource();
-        private CancellationToken cancelToken;
+        private const int Sleep = 500;
+        private static int _counter = 0;
+        private readonly CancellationTokenSource _cancelSource = new CancellationTokenSource();
+        private CancellationToken _cancelToken;
 
-        private Task monitoringTask;
+        private Task _monitoringTask;
 
         public void Start()
         {
-            cancelToken = cancelSource.Token;
+            _cancelToken = _cancelSource.Token;
 
-            monitoringTask = new Task(Run, TaskCreationOptions.LongRunning);
-            monitoringTask.Start();
+            _monitoringTask = new Task(Run, TaskCreationOptions.LongRunning);
+            _monitoringTask.Start();
         }
 
         private void Run()
@@ -34,24 +35,33 @@ namespace OxCoin.Services
                 GenerateMinersWithWalletIds();
             }
 
+            Thread.Sleep(100);
+            Console.WriteLine();
             Console.WriteLine("Generating transactions...");
-            Console.WriteLine("Press any key to exit...");
+            Console.WriteLine();
+            Console.Write("Press any key to exit...");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.CursorVisible = false;
 
-            var i = 0;
+            //var spinner = new ConsoleSpinner();
 
-            while (!cancelToken.IsCancellationRequested)
+            while (!_cancelToken.IsCancellationRequested)
             {
-                i++;
+                _counter++;
 
+                Console.Write("\rTransactions generated: {0}                      ", _counter);
+                //spinner.Turn();
                 GenerateTransaction();
+
                 //WaitHandle.WaitAny(new[] { cancelToken.WaitHandle }, TimeSpan.FromSeconds(30));
             }
         }
 
         public void Dispose()
         {
-            cancelSource.Cancel();
-            monitoringTask.Wait();
+            _cancelSource.Cancel();
+            _monitoringTask.Wait();
         }
 
         private static User GetGenesisUser()
@@ -74,13 +84,13 @@ namespace OxCoin.Services
 
             AddUser(genesisUser);
 
-            Thread.Sleep(SLEEP);
+            Thread.Sleep(Sleep);
 
             Console.WriteLine("Creating Genesis wallet...");
 
             AddWallet(new Wallet { UserId = GetGenesisUser().Id });
 
-            Thread.Sleep(SLEEP);
+            Thread.Sleep(Sleep);
         }
 
         private static void AddUser(User genesisUser)
@@ -130,7 +140,7 @@ namespace OxCoin.Services
                 AddWallet(new Wallet { UserId = user.Id });
             }
 
-            Thread.Sleep(SLEEP);
+            Thread.Sleep(Sleep);
         }
 
         private static IEnumerable<User> GetUsers()
@@ -165,7 +175,7 @@ namespace OxCoin.Services
                 AddMiner(miner);
             }
 
-            Thread.Sleep(SLEEP);
+            Thread.Sleep(Sleep);
         }
 
         private static void AddMiner(Miner miner)
@@ -187,7 +197,7 @@ namespace OxCoin.Services
             {
                 SourceWalletId = sourceWalletId,
                 DestinationWalletId = destinationWalletId,
-                TransferedAmount = Math.Round(random.Next(1, 999) / 1000.1m, 8),
+                TransferedAmount = Math.Round(random.Next(1, 999) / 100000.1m, 4),
                 Timestamp = new DateTime(random.Next(2017, 2017), random.Next(1, 12), random.Next(1, 28), random.Next(0, 23), random.Next(0, 59), random.Next(0, 59), random.Next(0, 999))
             });
         }
@@ -244,6 +254,28 @@ namespace OxCoin.Services
     }
 
     #region Etcetera
+    public class ConsoleSpinner
+    {
+        private int _counter = 0;
+
+        private const int Delay = 100;
+        private readonly string[] _sequence = { "/", "-", "\\", "|" };
+
+        public void Turn()
+        {
+            _counter++;
+
+            if (_counter >= _sequence.Length)
+            {
+                _counter = 0;
+            }
+
+            Console.Write("\r" + _sequence[_counter]);
+
+            Thread.Sleep(Delay);
+        }
+    }
+
     public static class ThreadSafeRandom
     {
         [ThreadStatic] private static Random _local;

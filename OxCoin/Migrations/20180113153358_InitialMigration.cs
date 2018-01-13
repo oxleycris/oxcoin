@@ -66,8 +66,8 @@ namespace OxCoin.Migrations
                     Size = table.Column<int>(nullable: false),
                     SourceWalletId = table.Column<Guid>(nullable: false),
                     Timestamp = table.Column<DateTime>(nullable: false),
-                    TransferFee = table.Column<decimal>(type: "decimal(18, 8)", nullable: false),
-                    TransferedAmount = table.Column<decimal>(type: "decimal(18, 8)", nullable: false)
+                    TransferFee = table.Column<decimal>(type: "decimal(18, 4)", nullable: false),
+                    TransferedAmount = table.Column<decimal>(type: "decimal(18, 4)", nullable: false)
                 },
                 constraints: table =>
                 {

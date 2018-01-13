@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using OxCoin.Repository.Entities;
-using System.Linq;
 
 namespace OxCoin.Repository
 {
@@ -22,7 +22,7 @@ namespace OxCoin.Repository
                 .SelectMany(t => t.GetProperties())
                 .Where(p => p.ClrType == typeof(decimal)))
             {
-                property.Relational().ColumnType = "decimal(18, 8)";
+                property.Relational().ColumnType = "decimal(18, 4)";
             }
         }
     }

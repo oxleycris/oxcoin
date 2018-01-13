@@ -11,7 +11,7 @@ using System;
 namespace OxCoin.Migrations
 {
     [DbContext(typeof(OxCoinDbContext))]
-    [Migration("20180112164735_InitialMigration")]
+    [Migration("20180113153358_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,10 +49,10 @@ namespace OxCoin.Migrations
                     b.Property<DateTime>("Timestamp");
 
                     b.Property<decimal>("TransferFee")
-                        .HasColumnType("decimal(18, 8)");
+                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<decimal>("TransferedAmount")
-                        .HasColumnType("decimal(18, 8)");
+                        .HasColumnType("decimal(18, 4)");
 
                     b.HasKey("Id");
 
